@@ -1,0 +1,110 @@
+#!/usr/bin/env python3
+import argparse
+import os
+from yaml import load
+import signal
+import daemon
+
+from spy.Daemon import SPYDaemon
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Ingress daemon')
+    parser.add_argument('command', choices=['start', 'stop', 'restart', 'check'])
+    args = parser.parse_args()
+    if args.command == 'start':
+        start()
+    elif args.command == 'stop':
+        stop()
+    elif args.command == 'restart':
+        stop()
+        start()
+    elif args.command == 'check':
+        check()
+
+
+def start():
+    print('Starting daemon...')
+    if not pid_exists():
+        context.open()
+        save_pid()
+        d = SPYDaemon(config)
+        d.start()
+        context.close()
+    else:
+        print("Another process already in progress")
+
+
+def stop():
+    print('Stopping daemon...')
+    if pid_exists():
+        pid = load_pid()
+        if pid > 0:
+            remove_pid()
+            try:
+                os.kill(pid, signal.SIGKILL)
+            except OSError:
+                print("Can't find such process: %s" % pid)
+
+
+def check():
+    if pid_exists():
+        pid = load_pid()
+        if pid > 0 and os.path.exists('/proc/' + str(pid)):
+            return True
+        remove_pid()
+    start()
+
+
+def save_pid():
+    try:
+        fh = open(PID_FILE, 'w')
+    except IOError:
+        print("Can't create pid file: %s" % IOError)
+        return False
+    else:
+        fh.write(str(os.getpid()))
+        fh.close()
+        return True
+
+
+def pid_exists():
+    return os.path.exists(PID_FILE)
+
+
+def load_pid():
+    try:
+        fh = open(PID_FILE, 'r')
+    except IOError:
+        print("Can't open pid file: %s" % IOError)
+    else:
+        pid = fh.readline().strip()
+        fh.close()
+        return int(pid)
+
+
+def remove_pid():
+    return os.remove(PID_FILE)
+
+
+def terminate(signal_number, stack_frame):
+    if pid_exists():
+        remove_pid()
+    context.terminate(signal_number, stack_frame)
+
+
+WORKING_DIR = os.path.dirname(os.path.abspath(__file__)) + "/"
+
+config = load(open(WORKING_DIR + '/config/config.yml', 'r'))
+PID_FILE = config['daemon']['pid_file']
+LOG_FILE = open(WORKING_DIR + config['dirs']['logs'] + "daemon_process.log", 'a')
+
+context = daemon.DaemonContext(
+    working_directory=WORKING_DIR,
+    stdout=LOG_FILE,
+    stderr=LOG_FILE,
+    signal_map={signal.SIGTERM: terminate}
+)
+
+if __name__ == "__main__":
+    main()

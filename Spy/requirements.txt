@@ -1,0 +1,7 @@
+pyyaml
+requests
+json
+beautifulsoup4
+pymongo
+argparse
+pika

@@ -1,0 +1,28 @@
+db:
+  host: localhost
+  port: 27017
+  db: ingress
+
+tilier:
+  base_lat: 54.753557 # https://www.ingress.com/intel?ll=54.753557,21.154175&z=10
+  base_lng: 21.154175
+
+daemon:
+  max_tiles_per_worker: 1000
+  pid_file: /tmp/spy.pid
+
+notifier:
+  sandbox: sandbox
+  apikey: apikey
+  alert_email: alert_email
+
+dirs:
+  logs: logs/
+
+rabbitmq:
+  host: 127.0.0.1
+  port: 5672
+  user: spy
+  password: spypass23234
+  queue_key: ingress_data_leak
+

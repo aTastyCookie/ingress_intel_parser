@@ -1,0 +1,6 @@
+pyyaml
+requests
+json
+pymongo
+argparse
+pika

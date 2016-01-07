@@ -1,0 +1,24 @@
+db:
+  host: localhost
+  port: 27017
+  db: ingress
+
+daemon:
+  pid_file: /tmp/hq.pid
+  workers: 1
+
+notifier:
+  sandbox: sandbox
+  apikey: apikey
+  alert_email: alert_email
+
+dirs:
+  logs: logs/
+
+rabbitmq:
+  host: 127.0.0.1
+  port: 5672
+  user: spy
+  password: spypass23234
+  queue_key: ingress_data_leak
+

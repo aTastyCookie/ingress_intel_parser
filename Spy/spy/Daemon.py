@@ -64,8 +64,8 @@ class SPYDaemon:
         for chunk in chunks:
             try:
                 account = accounts.next()
-                worker = Worker(self.config, chunk, account, self.notifier, name=account['email'])
-                self.logger.info("[Daemon] %s worker started" % account['email'])
+                worker = Worker(self.config, chunk, account, self.notifier, name=account['_id'])
+                self.logger.info("[Daemon] %s worker started" % account['_id'])
                 worker.start()
                 self.workers.append(worker)
             except StopIteration:

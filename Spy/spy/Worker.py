@@ -6,7 +6,8 @@ import spy.api.utils as utils
 
 
 class Worker(BaseWorker):
-    def run(self):
+
+    def process(self):
         portals = []
         portalsDetail = {}
 

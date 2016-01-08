@@ -2,8 +2,5 @@ from spy.exceptions.Ingress import IngressException
 
 
 class AccountBannedException(IngressException):
-    def __init__(self, email):
-        self.message = "Seems like account %s banned" % email
-
-    def __str__(self):
-        return repr(self.message)
+    def __init__(self, id):
+        self.message = "Seems like account with _id %s banned" % id
